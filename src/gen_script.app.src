@@ -1,0 +1,13 @@
+%% -*- mode: erlang;erlang-indent-level: 4;indent-tabs-mode: nil -*-
+%% ex: ts=4 sw=4 ft=erlang et
+
+{application, gen_script,
+ [{description, "Generic interface for running external scripts"},
+  {vsn, git},
+  {modules, []},
+  {registered, []},
+  {applications, [ kernel, stdlib ]},
+  %% {mod, {fire_engine, []}},
+  {start_phases, []},
+  {env, []}
+ ]}.
