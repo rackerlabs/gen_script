@@ -184,8 +184,8 @@ class Ernie
       rescue Object => e
         # ignore
       end
-      oruby = t[:noreply]
-      write_berp(output, oruby)
+      # oruby = t[:noreply]
+      # write_berp(output, oruby)
     else
       self.procline("invalid request")
       self.log.error("-> " + iruby.inspect) if self.log.level <= Logger::ERROR

@@ -6,7 +6,7 @@
          terminate/2, code_change/3]).
 
 %% API
--export([start/2, start_link/2, stop/1, call/3, call/4]).
+-export([start/2, start_link/2, stop/1, call/3, call/4, cast/3]).
 
 -record(state, { port :: port(), mod_name :: atom(), from }).
 
@@ -29,6 +29,9 @@ call(Pid, Fun, Args) ->
 
 call(Pid, Fun, Args, Timeout) ->
     gen_server:call(Pid, {Fun, Args, Timeout}, infinity).
+
+cast(Pid, Fun, Args) ->
+    gen_server:cast(Pid, {Fun, Args}).
 
 
 %%%===================================================================
