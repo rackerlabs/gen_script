@@ -148,7 +148,7 @@ class Ernie
     self.count += 1
 
     unless iruby
-      puts "Could not read BERP length header. Ernie server may have gone away. Exiting now."
+      # puts "Could not read BERP length header. Ernie server may have gone away. Exiting now."
       if self.log.level <= Logger::INFO
         self.log.info("(#{Process.pid}) Could not read BERP length header. Ernie server may have gone away. Exiting now.")
       end
