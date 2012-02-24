@@ -39,7 +39,8 @@ cast(Pid, Fun, Args) ->
 %%%===================================================================
 
 init([ModName, ScriptFile]) ->
-    Port = open_port({spawn, ScriptFile}, [{packet, 4}, nouse_stdio, exit_status, binary]),
+    ScriptCmd = boot_script(ScriptFile),
+    Port = open_port({spawn, ScriptCmd}, [{packet, 4}, nouse_stdio, exit_status, binary]),
     {ok, #state{ port = Port, mod_name = ModName }}.
 
 handle_call({Fun, Args, Timeout}, From, S) ->
@@ -81,6 +82,23 @@ terminate(_Reason, S) ->
 
 code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
+
+%%%===================================================================
+%%% Internal functions
+%%%===================================================================
+
+boot_script({ruby, File}) ->
+    RubyDir = filename:join([app_root(), "priv", "ruby"]),
+    BertDir = filename:join([RubyDir, "bert", "lib"]),
+    GSDir = filename:join(RubyDir, "gen_script"),
+    lists:flatten(io_lib:format("ruby -I ~s -I ~s -r ernie ~s", [BertDir, GSDir, File]));
+
+boot_script(ScriptFile) ->
+    ScriptFile.
+
+app_root() ->
+    Dir = filename:dirname(code:where_is_file("gen_script.app")),
+    filename:join(Dir, "..").
 
 maybe_reply(_, noreply) -> ok;
 maybe_reply(undefined, _) -> ok;
