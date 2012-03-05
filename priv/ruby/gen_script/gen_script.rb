@@ -116,6 +116,9 @@ class GenScript
     data = BERT.encode(ruby)
     output.write([data.length].pack("N"))
     output.write(data)
+  rescue Errno::EPIPE
+    # The Erlang process has died so just exit
+    exit!
   end
 
   # Start the processing loop.
