@@ -91,7 +91,7 @@ boot_script({ruby, File}) ->
     RubyDir = filename:join([app_root(), "priv", "ruby"]),
     BertDir = filename:join([RubyDir, "bert", "lib"]),
     GSDir = filename:join(RubyDir, "gen_script"),
-    lists:flatten(io_lib:format("ruby -I ~s -I ~s -r ernie ~s", [BertDir, GSDir, File]));
+    lists:flatten(io_lib:format("ruby -I ~s -I ~s -r gen_script ~s", [BertDir, GSDir, File]));
 
 boot_script(ScriptFile) ->
     ScriptFile.

@@ -2,7 +2,7 @@ require 'rubygems'
 require 'bert'
 require 'logger'
 
-class Ernie
+class GenScript
   VERSION = '2.5.2'
 
   class << self
@@ -148,9 +148,8 @@ class Ernie
     self.count += 1
 
     unless iruby
-      # puts "Could not read BERP length header. Ernie server may have gone away. Exiting now."
       if self.log.level <= Logger::INFO
-        self.log.info("(#{Process.pid}) Could not read BERP length header. Ernie server may have gone away. Exiting now.")
+        self.log.info("(#{Process.pid}) Could not read BERP length header. GenScript server may have gone away. Exiting now.")
       end
       exit!
     end
@@ -206,9 +205,9 @@ class Ernie
   end
 end
 
-class Ernie::ServerError < StandardError; end
+class GenScript::ServerError < StandardError; end
 
-class Ernie::Mod
+class GenScript::Mod
   attr_accessor :name, :funs
 
   def initialize(name)
@@ -225,13 +224,13 @@ end
 # Root level calls
 
 def logfile(name)
-  Ernie.logfile(name)
+  GenScript.logfile(name)
 end
 
 def loglevel(level)
-  Ernie.loglevel(level)
+  GenScript.loglevel(level)
 end
 
 at_exit do
-  Ernie.start if Ernie.auto_start
+  GenScript.start if GenScript.auto_start
 end

@@ -4,4 +4,4 @@ module TestScript
   end
 end
 
-Ernie.expose(:test_script, TestScript)
+GenScript.expose(:test_script, TestScript)
