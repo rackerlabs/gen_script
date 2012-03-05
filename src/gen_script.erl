@@ -77,7 +77,12 @@ handle_info(_Info, State) ->
     {noreply, State}.
 
 terminate(_Reason, S) ->
-    port_close(S#state.port),
+    try
+        port_close(S#state.port)
+    catch
+        error:badarg ->
+            ok
+    end,
     ok.
 
 code_change(_OldVsn, State, _Extra) ->
