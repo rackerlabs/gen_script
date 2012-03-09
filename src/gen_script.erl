@@ -8,28 +8,40 @@
 %% API
 -export([start/2, start_link/2, stop/1, call/3, call/4, cast/3]).
 
--record(state, { port :: port(), mod_name :: atom(), from }).
+-record(state, { port :: port(),
+                 mod_name :: atom(),
+                 from :: {pid(), atom()} }).
+
+-type error()    :: {error, term()}.
+-type fun_name() :: atom().
+-type fun_args() :: [list() | binary() | atom()].
 
 
 %%%===================================================================
 %%% API
 %%%===================================================================
 
+-spec start(atom(), string()) -> {ok, pid()} | ignore | error().
 start(ModName, ScriptFile) ->
     gen_server:start(?MODULE, [ModName, ScriptFile], []).
 
+-spec start_link(atom(), string()) -> {ok, pid()} | ignore | error().
 start_link(ModName, ScriptFile) ->
     gen_server:start_link(?MODULE, [ModName, ScriptFile], []).
 
+-spec stop(pid()) -> ok.
 stop(Pid) ->
     gen_server:cast(Pid, stop).
 
+-spec call(pid(), fun_name(), fun_args()) -> any().
 call(Pid, Fun, Args) ->
     call(Pid, Fun, Args, infinity).
 
+-spec call(pid(), fun_name(), fun_args(), timeout()) -> any().
 call(Pid, Fun, Args, Timeout) ->
     gen_server:call(Pid, {Fun, Args, Timeout}, infinity).
 
+-spec cast(pid(), fun_name(), fun_args()) -> ok.
 cast(Pid, Fun, Args) ->
     gen_server:cast(Pid, {Fun, Args}).
 
