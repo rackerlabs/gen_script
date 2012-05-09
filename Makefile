@@ -21,7 +21,7 @@ cleanall: clean
 
 unit:
 	@-mkdir -p logs/
-	@${CT_RUN} -pa ebin/ deps/*/ebin/ -dir test/ -logdir logs/
+	@${REBAR} ct skip_deps=true verbose=1
 
 bertext: priv/ruby/bert/ext/bert/c/Makefile
 	$(cd priv/ruby/bert/ext/bert/c; make)
