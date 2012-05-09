@@ -5,10 +5,19 @@ CT_RUN=`which ct_run`
 default: unit
 
 compile:
+	@${REBAR} compile skip_deps=true
+
+compileall:
 	@${REBAR} compile
 
+getdeps:
+	@${REBAR} get-deps
+
 clean:
-	@${REBAR} clean
+	@${REBAR} clean skip_deps=true
+
+cleanall: clean
+	@rm -rf deps/*
 
 unit:
 	@-mkdir -p logs/
@@ -28,3 +37,5 @@ plt: app.plt
 
 app.plt:
 	@${DIALYZER} --build_plt --apps stdlib kernel crypto erts compiler --output_plt app.plt -r ebin
+
+jenkins: cleanall getdeps compileall unit
