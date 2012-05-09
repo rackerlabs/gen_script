@@ -16,6 +16,10 @@
 -type fun_name() :: atom().
 -type fun_args() :: [list() | binary() | atom()].
 
+-type filepath() :: string().
+-type command()  :: string().
+-type source_lang() :: ruby.
+-type source_file() :: { source_lang(), filepath() } | filepath().
 
 %%%===================================================================
 %%% API
@@ -104,18 +108,20 @@ code_change(_OldVsn, State, _Extra) ->
 %%% Internal functions
 %%%===================================================================
 
+-spec boot_script(source_file()) -> command().
 boot_script({ruby, File}) ->
     RubyDir = filename:join([app_root(), "priv", "ruby"]),
     BertDir = filename:join([RubyDir, "bert", "lib"]),
     GSDir = filename:join(RubyDir, "gen_script"),
     lists:flatten(io_lib:format("ruby -I ~s -I ~s -r gen_script ~s", [BertDir, GSDir, File]));
-
 boot_script(ScriptFile) ->
     ScriptFile.
 
+-spec app_root() -> filepath().
 app_root() ->
     Dir = filename:dirname(code:where_is_file("gen_script.app")),
     filename:join(Dir, "..").
+
 
 maybe_reply(_, noreply) -> ok;
 maybe_reply(undefined, _) -> ok;
