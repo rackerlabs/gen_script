@@ -44,8 +44,12 @@ encode_term(T) when is_tuple(T) ->
     TList = tuple_to_list(T),
     TList2 = lists:map((fun encode_term/1), TList),
     list_to_tuple(TList2);
-encode_term(D) when dict =:= element(1, D) -> {bert, dict, dict:to_list(D)};
-encode_term(Term) -> Term.
+encode_term(Term) ->
+    try
+        {bert, dict, dict:to_list(Term)}
+    catch
+        error:{badrecord, dict} -> Term
+    end.
 
 %%---------------------------------------------------------------------------
 %% Decode
