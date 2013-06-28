@@ -2,26 +2,32 @@ REBAR=`which rebar || which ./rebar`
 DIALYZER=`which dialyzer`
 CT_RUN=`which ct_run`
 
-default: unit
+all: deps compile
+
+deps:
+	@$(REBAR) get-deps
 
 compile:
-	@${REBAR} compile skip_deps=true
+	@$(REBAR) compile
 
-compileall:
-	@${REBAR} compile
+app.plt:
+	@$(DIALYZER) --build_plt --output_plt app.plt --apps erts kernel stdlib crypto
 
-getdeps:
-	@${REBAR} get-deps
+dialyze: app.plt compile
+	@$(DIALYZER) -q --plt app.plt -n ebin -Wunmatched_returns -Werror_handling \
+		-Wrace_conditions -Wunderspecs
 
-clean:
-	@${REBAR} clean skip_deps=true
-
-cleanall: clean
-	@rm -rf deps/*
-
-unit:
+test:
 	@-mkdir -p logs/
 	@${REBAR} ct skip_deps=true verbose=1
+
+validate: dialyze test
+
+clean:
+	@$(REBAR) clean
+
+repl:
+	@$(ERL) -pa ebin
 
 bertext: priv/ruby/bert/ext/bert/c/Makefile
 	$(cd priv/ruby/bert/ext/bert/c; make)
@@ -29,10 +35,4 @@ bertext: priv/ruby/bert/ext/bert/c/Makefile
 priv/ruby/bert/ext/bert/c/Makefile:
 	$(cd priv/ruby/bert/ext/bert/c; ruby extconf.rb)
 
-analyze: compile app.plt
-	@${DIALYZER} --plt app.plt -Wno_opaque -Wunderspecs -Werror_handling -Wunmatched_returns ./ebin
-
-app.plt:
-	@${DIALYZER} --build_plt --apps stdlib kernel crypto erts compiler --output_plt app.plt -r ebin
-
-jenkins: cleanall getdeps compileall unit analyze
+.PHONY: all test clean validate dialyze deps bertext
