@@ -8,6 +8,8 @@
 %% API
 -export([start/2, start_link/2, stop/1, call/3, call/4, cast/3]).
 
+-define(DEFAULT_TIMEOUT, timer:minutes(5)).
+
 -record(state, { port :: port(),
                  mod_name :: atom(),
                  from :: {pid(), atom()} }).
@@ -39,11 +41,11 @@ stop(Pid) ->
 
 -spec call(pid(), fun_name(), fun_args()) -> any().
 call(Pid, Fun, Args) ->
-    call(Pid, Fun, Args, infinity).
+    call(Pid, Fun, Args, ?DEFAULT_TIMEOUT).
 
 -spec call(pid(), fun_name(), fun_args(), timeout()) -> any().
 call(Pid, Fun, Args, Timeout) ->
-    gen_server:call(Pid, {Fun, Args, Timeout}, infinity).
+    gen_server:call(Pid, {Fun, Args, Timeout}, Timeout).
 
 -spec cast(pid(), fun_name(), fun_args()) -> ok.
 cast(Pid, Fun, Args) ->
