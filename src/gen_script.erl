@@ -91,7 +91,8 @@ handle_info(timeout, S) ->
     error_logger:error_msg("Port ~p timed out~n", [S#state.port]),
     {stop, timeout, S};
 
-handle_info(_Info, State) ->
+handle_info(Info, State) ->
+    error_logger:error_msg("Received an unexpected message in gen_script: ~p~n", [Info]),
     {noreply, State}.
 
 terminate(_Reason, S) ->
